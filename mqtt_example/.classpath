@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.paho.client.mqttv3-1.0.1-20140728.040209-22.jar"/>
+	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.paho.client.mqttv3-1.0.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

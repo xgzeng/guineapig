@@ -14,59 +14,59 @@ public class AsyncClientSender {
     AsyncClientSender(String server_url) throws MqttException {
     	client = new MqttAsyncClient(server_url, MqttAsyncClient.generateClientId());
 		
-		// ÉèÖÃ»Øµôº¯Êı
+		// è®¾ç½®å›æ‰å‡½æ•°
 		client.setCallback(new MqttCallback() {
 			@Override
 			public void connectionLost(Throwable arg0) {
-				// ´¦ÀíÁ¬½ÓÖĞ¶Ï
-				System.out.println("Á¬½ÓÖĞ¶Ï");
-				// TODO: µÈ´ıÒ»¶ÎÊ±¼äºóÖØÁ¬
-				// ´¦ÀíÁ¬½ÓÖĞ¶Ï
+				// å¤„ç†è¿æ¥ä¸­æ–­
+				System.out.println("è¿æ¥ä¸­æ–­");
+				// TODO: ç­‰å¾…ä¸€æ®µæ—¶é—´åé‡è¿
+				// å¤„ç†è¿æ¥ä¸­æ–­
 				try {
 					client.connect().waitForCompletion();
 				} catch (MqttException e) {
-					// ´¦ÀíÁ¬½ÓÊ§°Ü
+					// å¤„ç†è¿æ¥å¤±è´¥
 					e.printStackTrace(); 
 				}
 			}
 
 			@Override
 			public void deliveryComplete(IMqttDeliveryToken arg0) {
-				// ´¦Àí·¢ËÍÍê³É, do nothing
+				// å¤„ç†å‘é€å®Œæˆ, do nothing
 			}
 
 			@Override
 			public void messageArrived(String arg0, MqttMessage arg1)
 					throws Exception {
-				// ´¦ÀíÊÕµ½ÏûÏ¢
+				// å¤„ç†æ”¶åˆ°æ¶ˆæ¯
 			}
 			
 		});
 		
-		client.connect().waitForCompletion(); // Á¬½Ó·şÎñÆ÷, ²¢µÈ´ıÍê³É
+		client.connect().waitForCompletion(); // è¿æ¥æœåŠ¡å™¨, å¹¶ç­‰å¾…å®Œæˆ
     }
 
 	void run() throws MqttException, InterruptedException {
 		MqttMessage msg = new MqttMessage();
 		
 		String s = "abc";
-		byte bytes[] = s.getBytes(Charset.forName("UTF-8")); // ×Ö·û´®×ª»»Îª×Ö½ÚÊı×é
+		byte bytes[] = s.getBytes(Charset.forName("UTF-8")); // å­—ç¬¦ä¸²è½¬æ¢ä¸ºå­—èŠ‚æ•°ç»„
 		msg.setPayload(bytes);
 		
 		for (int i = 0; i < 1000; ++i) {
 			try {
 			    client.publish("topic_test", msg);
 			} catch (MqttException e) {
-				// Á¬½Ó¶Ë»ò·¢ËÍÌ«¿ìÊ±»áÅ×³öÒì³£
+				// è¿æ¥ç«¯æˆ–å‘é€å¤ªå¿«æ—¶ä¼šæŠ›å‡ºå¼‚å¸¸
 				e.printStackTrace();
 			}
-			System.out.println("·¢ËÍÏûÏ¢");
+			System.out.println("å‘é€æ¶ˆæ¯");
 			Thread.sleep(5000);
 		}
 	}
 	
 	public static void main(String args[]) throws MqttException, InterruptedException {
-		// ·¢ËÍ¶Ë
+		// å‘é€ç«¯
 		AsyncClientSender sender = new AsyncClientSender("tcp://localhost:1883");
 		sender.run();
 	}

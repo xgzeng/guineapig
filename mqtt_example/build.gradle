@@ -1,0 +1,8 @@
+apply plugin: 'java'
+
+compileJava.options.encoding = 'UTF-8'
+
+dependencies {
+//  compile files('libs/org.eclipse.paho.client.mqttv3-1.0.1.jar')
+  compile fileTree(dir: 'libs', include: '*.jar')
+}

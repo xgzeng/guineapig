@@ -14,25 +14,25 @@ public class AsyncClientReceiver {
     AsyncClientReceiver(String server_url) throws MqttException {
     	client = new MqttAsyncClient(server_url, MqttAsyncClient.generateClientId());
 		
-		// ÉèÖÃ»Øµôº¯Êı
+		// è®¾ç½®å›æ‰å‡½æ•°
 		client.setCallback(new MqttCallback() {
 
 			@Override
 			public void connectionLost(Throwable arg0) {
-				// TODO: µÈ´ıÒ»¶ÎÊ±¼äºóÖØÁ¬
-				// ´¦ÀíÁ¬½ÓÖĞ¶Ï
+				// TODO: ç­‰å¾…ä¸€æ®µæ—¶é—´åé‡è¿
+				// å¤„ç†è¿æ¥ä¸­æ–­
 			}
 
 			@Override
 			public void deliveryComplete(IMqttDeliveryToken arg0) {
-				// ´¦Àí·¢ËÍÍê³É, do nothing
+				// å¤„ç†å‘é€å®Œæˆ, do nothing
 			}
 
 			@Override
 			public void messageArrived(String arg0, MqttMessage arg1)
 					throws Exception {
-				// ´¦ÀíÊÕµ½ÏûÏ¢
-				System.out.println("ÊÕµ½Ö÷Ìâ" + arg0 + "µÄÏûÏ¢");
+				// å¤„ç†æ”¶åˆ°æ¶ˆæ¯
+				System.out.println("æ”¶åˆ°ä¸»é¢˜" + arg0 + "çš„æ¶ˆæ¯");
 			}
 			
 		});
@@ -40,14 +40,14 @@ public class AsyncClientReceiver {
 
 	void run() throws MqttException, InterruptedException {
 		client.connect().waitForCompletion();
-		// ¶©ÔÄÏûÏ¢
+		// è®¢é˜…æ¶ˆæ¯
 		client.subscribe("topic_test", 2);
 		
-		Thread.sleep(1000); // do nothing, ÊÕµ½µÄÏûÏ¢ÔÚ»Øµ÷º¯ÊıÖĞ´¦Àí
+		Thread.sleep(1000); // do nothing, æ”¶åˆ°çš„æ¶ˆæ¯åœ¨å›è°ƒå‡½æ•°ä¸­å¤„ç†
 	}
 	
 	public static void main(String args[]) throws MqttException, InterruptedException {
-		// ½ÓÊÕ¶Ë
+		// æ¥æ”¶ç«¯
 		AsyncClientReceiver receiver = new AsyncClientReceiver("tcp://localhost:1883");
 		receiver.run();
 	}
