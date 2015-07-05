@@ -1,4 +1,5 @@
 #include "hello.pb.h"
+#include "hello.grpc.pb.h"
 #include <iostream>
 #include <cassert>
 #include <grpc++/channel_interface.h>
@@ -29,7 +30,7 @@ int main(int argc, char* argv[]) {
   auto status = hello_client->SayHello(&context, request, &reply);
   std::cout << "def" << std::endl;
 
-  if (status.IsOk()) {
+  if (status.ok()) {
     std::cout << "grpc success" << std::endl;
     std::cout << reply.message();
   } else {

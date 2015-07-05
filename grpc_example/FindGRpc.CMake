@@ -12,6 +12,7 @@ find_path(GRPC_INCLUDE_DIR grpc/grpc.h PATHS "${GRPC_SRC_ROOT}/include")
 
 set(GRPC_LIBRARY_SEARCH_PATH "${GRPC_SRC_ROOT}/libs/opt")
 
+find_library(GPR_LIBRARY gpr PATHS ${GRPC_LIBRARY_SEARCH_PATH})
 find_library(GRPC_LIBRARY grpc PATHS ${GRPC_LIBRARY_SEARCH_PATH})
 find_library(GRPC_CPP_LIBRARY grpc++ PATHS ${GRPC_LIBRARY_SEARCH_PATH})
 
@@ -22,13 +23,13 @@ find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin PATHS "${GRPC_SRC_ROOT}/bins/opt")
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(GRPC GRPC_INCLUDE_DIR
-  GRPC_LIBRARY GRPC_CPP_LIBRARY GRPC_CPP_PLUGIN)
+  GPR_LIBRARY GRPC_LIBRARY GRPC_CPP_LIBRARY GRPC_CPP_PLUGIN)
 
 if (NOT GRPC_FOUND)
   return()
 endif()
 
-set(GRPC_LIBRARIES ${GRPC_LIBRARY} ${GRPC_CPP_LIBRARY})
+set(GRPC_LIBRARIES ${GPR_LIBRARY} ${GRPC_LIBRARY} ${GRPC_CPP_LIBRARY})
 
 include(CMakeParseArguments)
 
@@ -72,11 +73,13 @@ function(PROTOBUF_GENERATE_CPP_WITH_GRPC SRCS HDRS)
     get_filename_component(FIL_WE ${FIL} NAME_WE)
 
     list(APPEND ${SRCS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc")
+    list(APPEND ${SRCS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.grpc.pb.cc")
     list(APPEND ${HDRS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h")
+    list(APPEND ${HDRS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.grpc.pb.h")
 
     add_custom_command(
-      OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
-             "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
+        OUTPUT ${SRCS} ${HDRS} #"${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
+        #             "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
       COMMAND  ${PROTOBUF_PROTOC_EXECUTABLE}
       ARGS --cpp_out  ${CMAKE_CURRENT_BINARY_DIR}
            --grpc_out=${CMAKE_CURRENT_BINARY_DIR} --plugin=protoc-gen-grpc=${GRPC_CPP_PLUGIN}
