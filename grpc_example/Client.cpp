@@ -2,17 +2,17 @@
 #include "hello.grpc.pb.h"
 #include <iostream>
 #include <cassert>
-#include <grpc++/channel_interface.h>
+#include <grpc++/channel.h>
 #include <grpc++/client_context.h>
 #include <grpc++/create_channel.h>
-#include <grpc++/credentials.h>
-#include <grpc++/channel_arguments.h>
-#include <grpc++/status.h>
+#include <grpc++/security/credentials.h>
+//#include <grpc++/channel_arguments.h>
+//#include <grpc++/status.h>
 
 int main(int argc, char* argv[]) {
   grpc_init();
 
-  auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureCredentials(), {});
+  auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
   assert(channel);
 
   auto hello_client = Greeter::NewStub(channel);

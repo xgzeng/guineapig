@@ -1,7 +1,7 @@
 #include "hello.pb.h"
 #include "hello.grpc.pb.h"
 #include <grpc++/server_builder.h>
-#include <grpc++/server_credentials.h>
+#include <grpc++/security/server_credentials.h>
 #include <grpc++/server.h>
 #include <iostream>
 
