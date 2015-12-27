@@ -34,7 +34,7 @@ public final class Hello {
       // @@protoc_insertion_point(message_implements:HelloRequest)
       HelloRequestOrBuilder {
     // Use HelloRequest.newBuilder() to construct.
-    private HelloRequest(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private HelloRequest(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private HelloRequest() {
@@ -66,9 +66,9 @@ public final class Hello {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              String s = input.readStringRequireUtf8();
 
-              name_ = bs;
+              name_ = s;
               break;
             }
           }
@@ -108,9 +108,7 @@ public final class Hello {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          name_ = s;
-        }
+        name_ = s;
         return s;
       }
     }
@@ -144,21 +142,19 @@ public final class Hello {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getNameBytes().isEmpty()) {
-        output.writeBytes(1, getNameBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, name_);
       }
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (!getNameBytes().isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getNameBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, name_);
       }
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -353,9 +349,7 @@ public final class Hello {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            name_ = s;
-          }
+          name_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -407,7 +401,8 @@ public final class Hello {
         if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+        
         name_ = value;
         onChanged();
         return this;
@@ -436,8 +431,8 @@ public final class Hello {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<HelloRequest> PARSER =
-        new com.google.protobuf.AbstractParser<HelloRequest>() {
+    private static final com.google.protobuf.Parser<HelloRequest>
+        PARSER = new com.google.protobuf.AbstractParser<HelloRequest>() {
       public HelloRequest parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -454,6 +449,10 @@ public final class Hello {
         }
       }
     };
+
+    public static com.google.protobuf.Parser<HelloRequest> parser() {
+      return PARSER;
+    }
 
     @java.lang.Override
     public com.google.protobuf.Parser<HelloRequest> getParserForType() {
@@ -492,7 +491,7 @@ public final class Hello {
       // @@protoc_insertion_point(message_implements:HelloReply)
       HelloReplyOrBuilder {
     // Use HelloReply.newBuilder() to construct.
-    private HelloReply(com.google.protobuf.GeneratedMessage.Builder builder) {
+    private HelloReply(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
     }
     private HelloReply() {
@@ -524,9 +523,9 @@ public final class Hello {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
+              String s = input.readStringRequireUtf8();
 
-              message_ = bs;
+              message_ = s;
               break;
             }
           }
@@ -566,9 +565,7 @@ public final class Hello {
         com.google.protobuf.ByteString bs = 
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
-        if (bs.isValidUtf8()) {
-          message_ = s;
-        }
+        message_ = s;
         return s;
       }
     }
@@ -602,21 +599,19 @@ public final class Hello {
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (!getMessageBytes().isEmpty()) {
-        output.writeBytes(1, getMessageBytes());
+        com.google.protobuf.GeneratedMessage.writeString(output, 1, message_);
       }
     }
 
-    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSerializedSize;
+      int size = memoizedSize;
       if (size != -1) return size;
 
       size = 0;
       if (!getMessageBytes().isEmpty()) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getMessageBytes());
+        size += com.google.protobuf.GeneratedMessage.computeStringSize(1, message_);
       }
-      memoizedSerializedSize = size;
+      memoizedSize = size;
       return size;
     }
 
@@ -811,9 +806,7 @@ public final class Hello {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            message_ = s;
-          }
+          message_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -865,7 +858,8 @@ public final class Hello {
         if (value == null) {
     throw new NullPointerException();
   }
-  
+  checkByteStringIsUtf8(value);
+        
         message_ = value;
         onChanged();
         return this;
@@ -894,8 +888,8 @@ public final class Hello {
       return DEFAULT_INSTANCE;
     }
 
-    public static final com.google.protobuf.Parser<HelloReply> PARSER =
-        new com.google.protobuf.AbstractParser<HelloReply>() {
+    private static final com.google.protobuf.Parser<HelloReply>
+        PARSER = new com.google.protobuf.AbstractParser<HelloReply>() {
       public HelloReply parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -912,6 +906,10 @@ public final class Hello {
         }
       }
     };
+
+    public static com.google.protobuf.Parser<HelloReply> parser() {
+      return PARSER;
+    }
 
     @java.lang.Override
     public com.google.protobuf.Parser<HelloReply> getParserForType() {
