@@ -1,0 +1,52 @@
+apply plugin: 'java'
+//apply plugin: 'com.google.protobuf'
+
+/*
+buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.7.1'
+  }
+}
+*/
+
+repositories {
+    mavenCentral()
+}
+
+/*
+compile buildscript {
+  repositories {
+    mavenCentral()
+  }
+  dependencies {
+    classpath 'com.google.protobuf:protobuf-gradle-plugin:0.6.1'
+  }
+}
+*/
+
+dependencies {
+  compile 'io.grpc:grpc-all:0.9.0'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'java'
+        }
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File Example',  
+            'Implementation-Version': '0.1',
+            'Main-Class': 'Main'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
