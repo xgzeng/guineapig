@@ -24,12 +24,12 @@ set(CMAKE_CXX_FLAGS "-std=c++11")
 
 add_library(hello ${PROTO_SRCS} ${PROTO_HDRS})
 
-add_executable(hello_server Server.cpp)
+add_executable(hello_server cpp/Server.cpp)
 
 target_link_libraries(hello_server hello
     ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
 
-add_executable(hello_client Client.cpp)
+add_executable(hello_client cpp/Client.cpp)
 target_link_libraries(hello_client hello
     ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
 

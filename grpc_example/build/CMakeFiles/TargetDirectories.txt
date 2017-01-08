@@ -1,0 +1,3 @@
+/Volumes/home/zengxg/projects/guineapig/grpc_example/build/CMakeFiles/hello_client.dir
+/Volumes/home/zengxg/projects/guineapig/grpc_example/build/CMakeFiles/hello_server.dir
+/Volumes/home/zengxg/projects/guineapig/grpc_example/build/CMakeFiles/hello.dir

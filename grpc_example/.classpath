@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="java"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libs/protobuf-java-3.0.0-alpha-3.jar"/>
+	<classpathentry kind="lib" path="libs/grpc-all-0.8.0-SNAPSHOT.jar"/>
+	<classpathentry kind="lib" path="libs/com.google.guava_15.0.0.v201403281430.jar"/>
+	<classpathentry kind="lib" path="libs/netty-all-4.1.0.Beta5.jar"/>
+	<classpathentry kind="lib" path="libs/hpack-v1.0.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
