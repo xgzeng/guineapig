@@ -7,19 +7,13 @@ import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class Main {
+    static String topic        = "TEST";
+    static int qos             = 2;
+    static String broker       = "tcp://localhost:1883";
 
-    public static void main(String[] args) throws InterruptedException {
-
-        String topic        = "MQTT Examples";
-        String content      = "Message from MqttPublishSample";
-        int qos             = 2;
-        String broker       = "tcp://localhost:1883";
-        String clientId     = "JavaSample";
-        MemoryPersistence persistence = new MemoryPersistence();
-
-        try {
-            MqttClient sampleClient = new MqttClient(broker, clientId, persistence);
-            sampleClient.setCallback(new MqttCallback() {
+	private static MqttClient CreateClient(String client_id) throws MqttException {
+        MqttClient sampleClient = new MqttClient(broker, client_id, new MemoryPersistence());
+        sampleClient.setCallback(new MqttCallback() {
             	@Override
             	public void connectionLost(Throwable e) {
             	}
@@ -30,37 +24,58 @@ public class Main {
             	
             	@Override
             	public void messageArrived(String topic, MqttMessage msg) {
-            		System.out.println("Message received");
+            		System.out.println("Message received:" + new String(msg.getPayload()));
             	}
-            });
+        });
 
-            MqttConnectOptions connOpts = new MqttConnectOptions();
-            connOpts.setCleanSession(true);
-            
-            System.out.println("Connecting to broker: "+broker);
-            sampleClient.connect(connOpts);
+        MqttConnectOptions connOpts = new MqttConnectOptions();
+        connOpts.setCleanSession(true);
+        
+        System.out.println("Connecting to broker: "+broker);
+        sampleClient.connect(connOpts);
 
-            System.out.println("Connected");
-            
+        System.out.println("Connected");
+        return sampleClient;
+	}
+	
+    public static void main(String[] args) throws InterruptedException {
+        try {
+            MqttClient client = CreateClient("sender");
             //
-            sampleClient.subscribe(topic);
+            client.subscribe(topic);
             
-            System.out.println("Publishing message: "+content);
+            String content = "Message from MqttPublishSample";
+            System.out.println("Publish message: "+content);
             MqttMessage message = new MqttMessage(content.getBytes());
-            message.setQos(qos);
-            sampleClient.publish(topic, message);
-            System.out.println("Message published");
+            // message.setQos(qos);
+            client.publish(topic, message);
             
             Thread.sleep(2*1000);
-            sampleClient.disconnect();
+            client.disconnect();
             System.out.println("Disconnected");
-            System.exit(0);
         } catch(MqttException me) {
-            System.out.println("reason "+me.getReasonCode());
-            System.out.println("msg "+me.getMessage());
-            System.out.println("loc "+me.getLocalizedMessage());
-            System.out.println("cause "+me.getCause());
-            System.out.println("excep "+me);
+            me.printStackTrace();
+        }
+        
+        // test for retain
+        try {
+            MqttClient client = CreateClient("sender");
+            String content = "Message from MqttPublishSample";
+            System.out.println("Publish message: "+content);
+            MqttMessage message = new MqttMessage(content.getBytes());
+            // message.setQos(qos);
+            message.setRetained(true);
+            client.publish(topic, message);
+            client.disconnect();
+            
+            // receive later
+            client = CreateClient("receiver");
+            client.subscribe(topic);
+            
+            Thread.sleep(2*1000);
+            client.disconnect();
+            System.out.println("Disconnected");
+        } catch(MqttException me) {
             me.printStackTrace();
         }
     }
