@@ -14,7 +14,8 @@ void setup() {
 const int MAX_ANALOG_INPUT_VOLTAGE_MV = 3422;
 
 float analogReadToVoltage(int value) {
-  return analogRead(A0) * MAX_ANALOG_INPUT_VOLTAGE_MV / 1023;  
+//  return analogRead(A0) * MAX_ANALOG_INPUT_VOLTAGE_MV / 1023;
+  return map(value, 0, 1023, 0, MAX_ANALOG_INPUT_VOLTAGE_MV);
 }
 
 float analogReadToCelsius(int value) {
