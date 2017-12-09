@@ -1,4 +1,4 @@
-int pin0 = 0;
+int pin2 = 2;
 
 void setup() {
   // set GPIO0 as output mode
@@ -7,7 +7,7 @@ void setup() {
 
 void loop() {
   // switch GPIO high/low with 1s interval
-  digitalWrite(pin0, HIGH);
+  digitalWrite(pin2, HIGH);
   delay(1000);
   digitalWrite(pin0, LOW);
   delay(1000);
