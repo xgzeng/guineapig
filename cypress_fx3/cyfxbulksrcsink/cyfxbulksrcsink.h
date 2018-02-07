@@ -1,5 +1,5 @@
 /*
- ## Cypress USB 3.0 Platform header file (cyfxbulkstreams.h)
+ ## Cypress USB 3.0 Platform header file (cyfxbulksrcsink.h)
  ## ===========================
  ##
  ##  Copyright Cypress Semiconductor Corporation, 2010-2011,
@@ -20,19 +20,14 @@
  ## ===========================
 */
 
-/* This file contains the constants used by the bulk streams application example */
+/* This file contains the constants used by the bulk source sink application example */
 
-#ifndef _INCLUDED_CYFXBULKSTREAMS_H_
-#define _INCLUDED_CYFXBULKSTREAMS_H_
+#ifndef _INCLUDED_CYFXBULKSRCSINK_H_
+#define _INCLUDED_CYFXBULKSRCSINK_H_
 
 #include "cyu3types.h"
 #include "cyu3usbconst.h"
 #include "cyu3externcstart.h"
-
-#define CY_FX_BULKSTREAMS_DMA_TX_SIZE        (0)                       /* DMA transfer size is set to infinite */
-#define CY_FX_BULKSTREAMS_THREAD_STACK       (0x1000)                  /* Bulk loop application thread stack size */
-#define CY_FX_BULKSTREAMS_THREAD_PRIORITY    (8)                       /* Bulk loop application thread priority */
-#define CY_FX_BULKSTREAMS_PATTERN            (0xAA)                    /* 8-bit pattern to be loaded to the source buffers. */
 
 /* Endpoint and socket definitions for the bulk source sink application */
 
@@ -51,23 +46,45 @@
 #define CY_FX_EP_PRODUCER_SOCKET        CY_U3P_UIB_SOCKET_PROD_1    /* Socket 1 is producer */
 #define CY_FX_EP_CONSUMER_SOCKET        CY_U3P_UIB_SOCKET_CONS_1    /* Socket 1 is consumer */
 
-/* Maximum stream count definitions: Only for super speed operation.
- * This needs to be a power of 2. */
+#define CY_FX_BULKSRCSINK_DMA_TX_SIZE        (0)        /* DMA transfer size is set to infinite */
+#define CY_FX_BULKSRCSINK_THREAD_STACK       (0x1000)   /* Bulk loop application thread stack size */
+#define CY_FX_BULKSRCSINK_THREAD_PRIORITY    (8)        /* Bulk loop application thread priority */
 
-#define CY_FX_EP_MAX_STREAMS_FIELD      (2)    /* Super speed maximum supported number of streams. */
-#define CY_FX_EP_MAX_STREAMS            (1 << CY_FX_EP_MAX_STREAMS_FIELD) /* Super speed maximum supported number of streams. */
+/* Burst mode definitions: Only for super speed operation. The maximum burst mode 
+ * supported is limited by the USB hosts available. The maximum value for this is 16
+ * and the minimum (no-burst) is 1. */
 
 #ifdef CYMEM_256K
 
-/* As we have only 32 KB of DMA buffer space, drop the buffering per DMA channel to 3 KB. */
-#define CY_FX_BULKSTREAMS_DMA_BUF_COUNT         (3)
+/*
+   As we have only 32 KB total DMA buffers available on the CYUSB3011/CYUSB3012 parts, the buffering
+   needs to be reduced.
+ */
+
+/* Burst length in 1 KB packets. Only applicable to USB 3.0. */
+#define CY_FX_EP_BURST_LENGTH                   (4)
+
+/* Multiplication factor used when allocating DMA buffers to reduce DMA callback frequency. */
+#define CY_FX_DMA_SIZE_MULTIPLIER               (1)
+
+/* Number of DMA buffers to be used. More buffers can give better throughput. */
+#define CY_FX_BULKSRCSINK_DMA_BUF_COUNT         (2)
 
 #else
 
-/* Use upto 8 KB of buffering per DMA channel. */
-#define CY_FX_BULKSTREAMS_DMA_BUF_COUNT         (8)
+/* Burst length in 1 KB packets. Only applicable to USB 3.0. */
+#define CY_FX_EP_BURST_LENGTH                   (16)
+
+/* Multiplication factor used when allocating DMA buffers to reduce DMA callback frequency. */
+#define CY_FX_DMA_SIZE_MULTIPLIER               (2)
+
+/* Number of DMA buffers to be used. More buffers can give better throughput. */
+#define CY_FX_BULKSRCSINK_DMA_BUF_COUNT         (3)
 
 #endif
+
+/* Byte value that is filled into the source buffers that FX3 sends out. */
+#define CY_FX_BULKSRCSINK_PATTERN            (0x6C)
 
 /* Extern definitions for the USB Descriptors */
 extern const uint8_t CyFxUSB20DeviceDscr[];
@@ -80,9 +97,10 @@ extern const uint8_t CyFxUSBSSConfigDscr[];
 extern const uint8_t CyFxUSBStringLangIDDscr[];
 extern const uint8_t CyFxUSBManufactureDscr[];
 extern const uint8_t CyFxUSBProductDscr[];
+extern const uint8_t CyFxUsbOSDscr[];
 
 #include <cyu3externcend.h>
 
-#endif /* _INCLUDED_CYFXBULKSTREAMS_H_ */
+#endif /* _INCLUDED_CYFXBULKSRCSINK_H_ */
 
 /*[]*/

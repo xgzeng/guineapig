@@ -20,7 +20,7 @@
  ## ===========================
 */
 
-/* This file contains the USB enumeration descriptors for the bulk streams application example.
+/* This file contains the USB enumeration descriptors for the bulk source sink application example.
  * The descriptor arrays must be 32 byte aligned and multiple of 32 bytes if the D-cache is
  * turned on. If the linker used is not capable of supporting the aligned feature for this,
  * either the descriptors must be placed in a different section and the section should be 
@@ -32,7 +32,7 @@
  * CyU3PDeviceCacheControl for more information.
  */
 
-#include "cyfxbulkstreams.h"
+#include "cyfxbulksrcsink.h"
 
 /* Standard device descriptor for USB 3.0 */
 const uint8_t CyFxUSB30DeviceDscr[] __attribute__ ((aligned (32))) =
@@ -45,7 +45,7 @@ const uint8_t CyFxUSB30DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,                           /* Device protocol */
     0x09,                           /* Maxpacket size for EP0 : 2^9 */
     0xB4,0x04,                      /* Vendor ID */
-    0xF0,0x00,                      /* Product ID */
+    0xF1,0x00,                      /* Product ID */
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
@@ -64,7 +64,7 @@ const uint8_t CyFxUSB20DeviceDscr[] __attribute__ ((aligned (32))) =
     0x00,                           /* Device protocol */
     0x40,                           /* Maxpacket size for EP0 : 64 bytes */
     0xB4,0x04,                      /* Vendor ID */
-    0xF0,0x00,                      /* Product ID */
+    0xF1,0x00,                      /* Product ID */
     0x00,0x00,                      /* Device release number */
     0x01,                           /* Manufacture string index */
     0x02,                           /* Product string index */
@@ -93,8 +93,8 @@ const uint8_t CyFxUSBBOSDscr[] __attribute__ ((aligned (32))) =
     0x00,                           /* Supported device level features  */
     0x0E,0x00,                      /* Speeds supported by the device : SS, HS and FS */
     0x03,                           /* Functionality support */
-    0x00,                           /* U1 Device Exit latency */
-    0x00,0x00                       /* U2 Device Exit latency */
+    0x0A,                           /* U1 Device Exit latency */
+    0xFF,0x07                       /* U2 Device Exit latency */
 };
 
 /* Standard device qualifier descriptor */
@@ -146,8 +146,8 @@ const uint8_t CyFxUSBSSConfigDscr[] __attribute__ ((aligned (32))) =
     /* Super speed endpoint companion descriptor for producer EP */
     0x06,                           /* Descriptor size */
     CY_U3P_SS_EP_COMPN_DESCR,       /* SS endpoint companion descriptor type */
-    0x00,                           /* Max no. of packets in a burst : 0: burst 1 packet at a time */
-    CY_FX_EP_MAX_STREAMS_FIELD,     /* Max streams for bulk EP = 4 (2 ^ 2) */
+    (CY_FX_EP_BURST_LENGTH - 1),    /* Max no. of packets in a burst(0-15) - 0: burst 1 packet at a time */
+    0x00,                           /* Max streams for bulk EP = 0 (No streams) */
     0x00,0x00,                      /* Service interval for the EP : 0 for bulk */
 
     /* Endpoint descriptor for consumer EP */
@@ -161,8 +161,8 @@ const uint8_t CyFxUSBSSConfigDscr[] __attribute__ ((aligned (32))) =
     /* Super speed endpoint companion descriptor for consumer EP */
     0x06,                           /* Descriptor size */
     CY_U3P_SS_EP_COMPN_DESCR,       /* SS endpoint companion descriptor type */
-    0x00,                           /* Max no. of packets in a burst : 0: burst 1 packet at a time */
-    CY_FX_EP_MAX_STREAMS_FIELD,     /* Max streams for bulk EP = 4 (2 ^ 2) */
+    (CY_FX_EP_BURST_LENGTH - 1),    /* Max no. of packets in a burst(0-15) - 0: burst 1 packet at a time */
+    0x00,                           /* Max streams for bulk EP = 0 (No streams) */
     0x00,0x00                       /* Service interval for the EP : 0 for bulk */
 };
 
@@ -278,6 +278,20 @@ const uint8_t CyFxUSBProductDscr[] __attribute__ ((aligned (32))) =
     'F',0x00,
     'X',0x00,
     '3',0x00
+};
+
+/* Microsoft OS Descriptor. */
+const uint8_t CyFxUsbOSDscr[] __attribute__ ((aligned (32))) =
+{
+    0x0E,
+    CY_U3P_USB_STRING_DESCR,
+    'O', 0x00,
+    'S', 0x00,
+    ' ', 0x00,
+    'D', 0x00,
+    'e', 0x00,
+    's', 0x00,
+    'c', 0x00
 };
 
 /* Place this buffer as the last buffer so that no other variable / code shares
