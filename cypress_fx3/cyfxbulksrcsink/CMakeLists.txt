@@ -2,6 +2,19 @@ cmake_minimum_required(VERSION 3.5)
 
 project(cyfxbulksrcsink C ASM)
 
+# Build Host Utility Tools
+include(ExternalProject)
+ExternalProject_Add(cyfx3_host_tools
+  SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tools"
+  INSTALL_COMMAND ""  # Skip install step
+)
+
+ExternalProject_Get_Property(cyfx3_host_tools BINARY_DIR)
+#message(FATAL_ERROR ${BINARY_DIR})
+set(CYFX3_ELF2IMG_EXECUTALBE "${BINARY_DIR}/elf2img")
+set(BINARY_DIR)
+
+# 
 set(CYFX3_SDK_DIR "/mnt/d/projects/env/FX3_SDK/cyfx3sdk")
 if(NOT IS_DIRECTORY ${CYFX3_SDK_DIR})
   message(FATAL_ERROR "CYFX3_SDK_DIR ${CYFX3_SDK_DIR} not exists")
@@ -55,4 +68,9 @@ set_target_properties(cyfxbulksrcsink
     OUTPUT_NAME cyfxbulksrcsink.elf
     COMPILE_FLAGS ${FX3_COMPILE_FLAGS}
     LINK_FLAGS ${FX3_LINK_FLAGS}
+)
+
+# convert output .elf file to .img
+add_custom_command(OUTPUT cyfxbulksrcsink.img
+  COMMAND ${CYFX3_ELF2IMG_EXECUTALBE} -i cyfxbulksrcsink.elf -o cyfxbulksrcsink.img
 )
