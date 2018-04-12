@@ -1,8 +1,3 @@
-if (NOT GRPC_SRC_ROOT)
-  message(SEND_ERROR "GRPC_SRC_ROOT is not defined")
-  return()
-endif()
-
 find_package(Protobuf)
 if(NOT PROTOBUF_FOUND)
   message("Global Protobuf is not found, used Grpc embedded protobuf")
@@ -21,16 +16,21 @@ if(NOT PROTOBUF_FOUND)
 endif()
 
 if(NOT PROTOBUF_FOUND)
-  message(SEND_ERROR "Protobuf v3 is required to use grpc")
+  message(SEND_ERROR "Protobuf is required to use grpc")
   return()
 endif()
 
-find_path(GRPC_INCLUDE_DIR grpc/grpc.h PATHS "${GRPC_SRC_ROOT}/include")
+if(GRPC_SRC_ROOT)
+  set(GRPC_INCLUDE_SEARCH_PATH "${GRPC_SRC_ROOT}/include")
+  set(GRPC_LIBRARY_SEARCH_PATH "${GRPC_SRC_ROOT}/libs/opt")
+endif()
 
-set(GRPC_LIBRARY_SEARCH_PATH "${GRPC_SRC_ROOT}/libs/opt")
+find_path(GRPC_INCLUDE_DIR grpc/grpc.h PATHS ${GRPC_INCLUDE_SEARCH_PATH})
 
 find_library(GPR_LIBRARY gpr PATHS ${GRPC_LIBRARY_SEARCH_PATH})
+
 find_library(GRPC_LIBRARY grpc PATHS ${GRPC_LIBRARY_SEARCH_PATH})
+
 find_library(GRPC_CPP_LIBRARY grpc++ PATHS ${GRPC_LIBRARY_SEARCH_PATH})
 
 find_program(GRPC_CPP_PLUGIN grpc_cpp_plugin PATHS "${GRPC_SRC_ROOT}/bins/opt")

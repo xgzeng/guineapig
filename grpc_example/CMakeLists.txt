@@ -5,9 +5,6 @@ set(CMAKE_BUILD_TYPE DEBUG)
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 
-set(GRPC_SRC_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../grpc)
-set(GRPC_JAVA_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/../../grpc-java)
-
 find_package(GRpc)
 if(NOT GRPC_FOUND)
   message(FATAL_ERROR "grpc is required to build")
@@ -31,5 +28,9 @@ target_link_libraries(hello_server hello
 
 add_executable(hello_client cpp/Client.cpp)
 target_link_libraries(hello_client hello
+    ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
+
+add_executable(async_hello_server cpp/AsyncServer.cpp)
+target_link_libraries(async_hello_server hello
     ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
 
