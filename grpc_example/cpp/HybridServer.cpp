@@ -18,7 +18,7 @@ public:
   }
 
   void ProcessRequest(const HelloRequest& req) {
-    std::cout << "SayHello: " << req.name() << std::endl;
+    std::cout << "SayHello2: " << req.name() << std::endl;
     HelloReply reply;
     reply.set_message("Hello " + req.name());
     Finish(reply);

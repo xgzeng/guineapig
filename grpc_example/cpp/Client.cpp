@@ -36,13 +36,28 @@ int main(int argc, char* argv[]) {
   }
 
   {
+    grpc::CompletionQueue cq;
+
     request.set_name("hbrid world");
     grpc::ClientContext context;
-    auto status = hello_client->SayHello2(&context, request, &reply);
-    if (status.ok()) {
-      std::cout << "grpc success: " << reply.message() << std::endl;
-    } else {
-      std::cout << "grpc failed" << std::endl;
+    
+    auto response_reader = hello_client->AsyncSayHello2(&context, request, &cq);
+
+    HelloReply reply;
+    grpc::Status status;
+
+    response_reader->Finish(&reply, &status, (void*)1);
+
+    void* got_tag;
+    bool ok = false;
+    cq.Next(&got_tag, &ok);
+    if (ok && got_tag == (void*)1) {
+      // check reply and status
+      if (status.ok()) {
+        std::cout << "grpc success: " << reply.message() << std::endl;
+      } else {
+        std::cout << "grpc failed" << std::endl;
+      }
     }
   }
 
