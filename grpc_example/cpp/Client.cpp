@@ -23,18 +23,27 @@ int main(int argc, char* argv[]) {
   request.set_name("world");
 
   HelloReply reply;
-  grpc::ClientContext context;
 
-  std::cout << "abc" << std::endl;
+  {
+    grpc::ClientContext context;
+    auto status = hello_client->SayHello(&context, request, &reply);
 
-  auto status = hello_client->SayHello(&context, request, &reply);
-  std::cout << "def" << std::endl;
+    if (status.ok()) {
+      std::cout << "grpc success: " << reply.message() << std::endl;
+    } else {
+      std::cout << "grpc failed" << std::endl;
+    }
+  }
 
-  if (status.ok()) {
-    std::cout << "grpc success" << std::endl;
-    std::cout << reply.message();
-  } else {
-    std::cout << "grpc failed" << std::endl;
+  {
+    request.set_name("hbrid world");
+    grpc::ClientContext context;
+    auto status = hello_client->SayHello2(&context, request, &reply);
+    if (status.ok()) {
+      std::cout << "grpc success: " << reply.message() << std::endl;
+    } else {
+      std::cout << "grpc failed" << std::endl;
+    }
   }
 
   grpc_shutdown();

@@ -5,28 +5,36 @@
 
 #include <grpc++/server_builder.h>
 #include <grpc++/security/server_credentials.h>
-#include <grpc++/server.h>
 
-#include <cassert>
+#include <iostream>
 
-class AsyncGreeterServiceImpl;
+typedef Greeter::WithAsyncMethod_SayHello2<Greeter::Service> GreeterHybridService;
 
 class HelloProcessor :
-    public AsyncRequestProcessor<Greeter::AsyncService, HelloRequest, HelloReply> {
+    public AsyncRequestProcessor<GreeterHybridService, HelloRequest, HelloReply> {
 public:
-  HelloProcessor(Greeter::AsyncService* service, grpc::ServerCompletionQueue* cq)
-    : AsyncRequestProcessor(*service, &Greeter::AsyncService::RequestSayHello, cq) {
+  HelloProcessor(GreeterHybridService* service, grpc::ServerCompletionQueue* cq)
+    : AsyncRequestProcessor(*service, &GreeterHybridService::RequestSayHello2, cq) {
   }
 
   void ProcessRequest(const HelloRequest& req) {
+    std::cout << "SayHello: " << req.name() << std::endl;
     HelloReply reply;
     reply.set_message("Hello " + req.name());
     Finish(reply);
   }
 };
 
-class AsyncGreeterServiceImpl : public Greeter::AsyncService {
+class HelloServiceImpl : public GreeterHybridService {
 public:
+  grpc::Status SayHello(grpc::ServerContext*, const HelloRequest* request,
+                        HelloReply* reply) override {
+
+    std::cout << "SayHello: " << request->name() << std::endl;
+    reply->set_message("hello " + request->name());
+    return grpc::Status::OK;
+  }
+
   void RegisterTo(grpc::ServerBuilder& builder) {
     builder.RegisterService(this);
     cq_ = builder.AddCompletionQueue();
@@ -66,19 +74,19 @@ private:
 int main(int argc, char* argv[]) {
   grpc_init();
 
-  AsyncGreeterServiceImpl greeter_service;
-
-  // HelloServiceImpl service;
+  HelloServiceImpl service;
 
   grpc::ServerBuilder builder;
   builder.AddListeningPort("0.0.0.0:50051", grpc::InsecureServerCredentials());
 
-  greeter_service.RegisterTo(builder);
+  service.RegisterTo(builder);
+  //builder.RegisterService(&service);
 
   auto server = builder.BuildAndStart();
+  service.Run();
 
-  greeter_service.Run();
   //server->Wait();
 
-  grpc_shutdown();    
+  grpc_shutdown();
+  return 0;
 }

@@ -34,3 +34,6 @@ add_executable(async_hello_server cpp/AsyncServer.cpp)
 target_link_libraries(async_hello_server hello
     ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
 
+add_executable(hybrid_hello_server cpp/HybridServer.cpp)
+target_link_libraries(hybrid_hello_server hello
+    ${PROTOBUF_LIBRARIES} ${GRPC_LIBRARIES})
