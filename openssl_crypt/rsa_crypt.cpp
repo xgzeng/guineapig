@@ -37,6 +37,11 @@ int main(int argc, char* argv[]) {
   }
 
   // 将公钥转换为2进制字节
+  // 结果应为:
+  //  BFA99EEB367E7FF6CE7ECA380D6ED02F2D90EA69F6447207516271C2B9F3B60AD67E8
+  //  2926F0927320AA87D379BD9C02F634D29422804D25FD84BAFE2F75709E400DA305DEE
+  //  96DDB10F36FE222161091769A1543F469F169E2C6FBCCE6540BA3897B5300ACED977D
+  //  D807F324F6307CF70B4B0F019781AF1F1949B3A194860B651
   int key_size = BN_num_bytes(rsa->n);
   printf("ras key size is %d bytes\n", key_size);
 
@@ -46,7 +51,9 @@ int main(int argc, char* argv[]) {
           n, key_bytes[0], key_bytes[1],
           key_bytes[n - 2], key_bytes[n - 1]);
 
-  // printf("rsa key: %s\n", BN_bn2hex(rsa->n));
+  printf("rsa key: %s\n", BN_bn2hex(rsa->n));
+
+  // 使用公钥加密
   char clear_txt[] = "hello world";
   unsigned char crypt_txt[256];
 
