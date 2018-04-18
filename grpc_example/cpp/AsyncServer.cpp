@@ -18,7 +18,7 @@ public:
     : AsyncRequestProcessor(*service, &Greeter::AsyncService::RequestSayHello, cq) {
   }
 
-  void ProcessRequest(const HelloRequest& req) {
+  void HandleRequest(const HelloRequest& req) override {
     HelloReply reply;
     reply.set_message("Hello " + req.name());
     Finish(reply);
@@ -35,9 +35,9 @@ public:
   void CreateNewProcessor() {
     auto p = new HelloProcessor(this, cq_.get());
 
-    p->OnRequestReceived([this]{
-      this->CreateNewProcessor(); // wait for next request
-    });
+    // p->OnRequestReceived([this]{
+    //   this->CreateNewProcessor(); // wait for next request
+    // });
 
     p->Initiate();
   }
@@ -54,8 +54,7 @@ public:
       // The return value of Next should always be checked. This return value
       // tells us whether there is any kind of event or cq_ is shutting down.
       assert(cq_->Next(&tag, &ok));
-      assert(ok);
-      static_cast<CompletionQueueItem*>(tag)->Proceed();
+      static_cast<CompletionQueueItem*>(tag)->Proceed(ok, 0);
     }
   }
 

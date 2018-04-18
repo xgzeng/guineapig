@@ -18,7 +18,6 @@ int main(int argc, char* argv[]) {
   auto hello_client = Greeter::NewStub(channel);
   assert(channel);
 
-
   HelloRequest request;
   request.set_name("world");
 
@@ -29,16 +28,16 @@ int main(int argc, char* argv[]) {
     auto status = hello_client->SayHello(&context, request, &reply);
 
     if (status.ok()) {
-      std::cout << "grpc success: " << reply.message() << std::endl;
+      std::cout << "SayHello: " << reply.message() << std::endl;
     } else {
-      std::cout << "grpc failed" << std::endl;
+      std::cout << "SayHello failed" << std::endl;
     }
   }
 
-  {
+  { // async operation
     grpc::CompletionQueue cq;
 
-    request.set_name("hbrid world");
+    request.set_name("world");
     grpc::ClientContext context;
     
     auto response_reader = hello_client->AsyncSayHello2(&context, request, &cq);
@@ -54,11 +53,24 @@ int main(int argc, char* argv[]) {
     if (ok && got_tag == (void*)1) {
       // check reply and status
       if (status.ok()) {
-        std::cout << "grpc success: " << reply.message() << std::endl;
+        std::cout << "SayHello2: " << reply.message() << std::endl;
       } else {
-        std::cout << "grpc failed" << std::endl;
+        std::cout << "SayHello2 failed" << std::endl;
       }
     }
+  }
+
+  // sync stream reply
+  {
+    grpc::ClientContext context;
+    auto reply_reader = hello_client->SayHello3(&context, request);
+
+    HelloReply reply;
+    while (reply_reader->Read(&reply)) {
+      std::cout << "SayHello3: " << reply.message() << std::endl;
+    }
+
+    reply_reader->Finish();
   }
 
   grpc_shutdown();
